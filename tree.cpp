@@ -1,90 +1,126 @@
 #include<iostream>
+#include <queue>
 using namespace std;
 
-class Emp;
-Emp *root;
+class BT;
+BT *root;
 
-class Emp{
-     
-     public:
-          
-          int id;
-          Emp *lc, *rc;
-     
-          void create(){
-               
-               //allocating space to root node
-               root = new Emp;
-               root->lc = root->rc = NULL;
-               
-               //taking input and storing data 
-               cout<<"Enter id: ";
-               cin>>root->id;  
-          }
-          
-          void insert( Emp *a, Emp *b = root){
-               
-               char ch;
-               cout<<"Where do you want to insert(l/r): ";
-               cin>>ch;
-               
-               if(ch =='l'){
+class BT{
+
+     public: 
+
+     char data;
+     BT *l, *r;
+
+     BT(){
+          l = nullptr;
+          r = nullptr;
+     }
+
+     void insert( BT *a, BT *b = root){
+                         
+          cout<<"Insert Node(l/r): ";
+          char ch;cin>>ch;
                     
-                    if(b->lc == NULL){
-                         b->lc = a;
-                    }
-                    else{
-                         insert(a,b->lc);
-                    }
-               }
-               else{
-               
-                    if(b->rc == NULL){
-                         b->rc = a;
-                    }
-                    else{
-                         insert(a,b->rc);
-                    }
-               
-               }
+          if(ch =='l'){ 
+               if(b->l == NULL)b->l = a;
+               else insert(a,b->l);
           }
+          else{
+               if(b->r == NULL)b->r = a;
+               else insert(a,b->r);     
+          }
+     }
+     void add(){
+
+          cout<<"Enter data: ";
+          char d; cin>>d;
+
+          BT *newnode = new BT;
+          newnode->data = d;
+
+          if(root == nullptr)root = newnode;
+          else{
+               insert(newnode);
+          }
+     }
+     void display(BT *root){
+
+          if(root == nullptr)return;
+
+          display(root->l);
+          cout<<root->data<<" ";
+          display(root->r);
+     }
+
+// Recursive function to print the tree in the desired format
+void printTree(BT* root, string indent = "", bool isRight = false) {
+    if (root == nullptr) return;
+
+    // Print the current node with its indentation
+    cout << indent;
+    if (isRight) {
+        cout << "    /";
+        indent += "     ";
+    } else {
+        cout << "    \\";
+        indent += "     ";
+    }
+
+    cout << root->data << endl;
+
+    // Recurse for the right and left children
+    if (root->r) {
+        printTree(root->r, indent, true);  // Right child (isRight = true)
+    }
+
+    if (root->l) {
+        printTree(root->l, indent, false); // Left child (isRight = false)
+    }
+}
 
 };
-void display(Emp *a){
-     
-     if(a == NULL)return;
-     
-     display(a->lc);
-     cout<<a->id<<endl;
-     display(a->rc);          
-}
+
 int main(){
 
-     Emp a;
-     
-     a.create();
-     
-     Emp *next = new Emp;
-     cout<<"Enter id of next node: ";
-     cin>>next->id;
-     
-     a.insert(next,root);
-     
-     next = new Emp;
-     cout<<"Enter id of next node: ";
-     cin>>next->id;
-     
-     a.insert(next,root);
-     
-      next = new Emp;
-     cout<<"Enter id of next node: ";
-     cin>>next->id;
-     
-     a.insert(next,root);
-     
+     int ch;
+     bool flag = true;
 
-     
-     //cout<<root->id<<"  "<<root->lc->id;  
-     display(root);
+     BT binary_tree;
+
+     while(flag){
+
+          system("clear");
+          binary_tree.printTree(root);
+          cout<<"\n\nMain Menue\n\n\t1. Add new node\n\t2. Display nodes\n\t3. Exit\n\nEnter your choice: ";
+          cin>>ch;
+
+          switch(ch){
+
+               case 1:
+                    binary_tree.add();
+                    break;
+
+               case 2:
+
+                    cout<<"Tree: ";
+                    binary_tree.display(root);
+                    
+                    cout << "\n\nPress Enter to Continue";
+                    cin.ignore();
+                    break;
+
+               case 3:
+                    flag = false;
+                    break;
+          }
+
+          
+          cout << "Press Enter to Continue";
+          cin.ignore();
+
+     }
+
+
      return 0;
 }
